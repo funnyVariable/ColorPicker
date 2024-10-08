@@ -19,7 +19,7 @@
   overflow: hidden;
 }
 .ColorPicker .colorGroup {
-  height: var(--size1);
+  height: calc(var(--size1) - 2px);
   width: var(--size2);
   border-left: inherit;
   right: 0;
@@ -55,6 +55,7 @@
 .ColorPicker .alphaChannel .picker {
   border: solid 2px rgba(0, 0, 0, 0.75);
   position: absolute;
+  cursor: grab;
 }
 
 .ColorPicker .colorGroup .picker {

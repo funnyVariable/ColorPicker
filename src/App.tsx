@@ -1,5 +1,3 @@
-// type alias { clientX, clientY }: { clientX: number; clientY: number }
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 
@@ -11,12 +9,16 @@ function App() {
   const currentPicker = useRef<currentPickerType>("");
 
   const colorsRef = useRef<HTMLDivElement | null>(null);
-  const colorPickerRef = useRef<HTMLDivElement | null>(null);
+  const colorsPickerRef = useRef<HTMLDivElement | null>(null);
+
+  const colorGroupRef = useRef<HTMLDivElement | null>(null);
+  const colorGroupPickerRef = useRef<HTMLDivElement | null>(null);
 
   // Event Handling
   const colorsPickerMove = useCallback(
     ({ clientX, clientY }: clientCoords) => {
       if (!colorsRef.current) return;
+      console.log(isPicking);
 
       const refName = currentPicker.current;
       let currentRef;
@@ -24,7 +26,10 @@ function App() {
 
       if (refName === "colors") {
         currentRef = colorsRef;
-        currentPickerRef = colorPickerRef;
+        currentPickerRef = colorsPickerRef;
+      } else if (refName === "colorGroup") {
+        currentRef = colorGroupRef;
+        currentPickerRef = colorGroupPickerRef;
       }
 
       if (currentRef?.current && currentPickerRef?.current) {
@@ -36,7 +41,8 @@ function App() {
         x = Math.max(0, Math.min(x, colorRect.width));
         y = Math.max(0, Math.min(y, colorRect.height));
 
-        currentPickerRef.current.style.left = `${x}px`;
+        if (refName !== "colorGroup")
+          currentPickerRef.current.style.left = `${x}px`;
         currentPickerRef.current.style.top = `${y}px`;
       }
     },
@@ -73,17 +79,21 @@ function App() {
   return (
     <div className="ColorPicker">
       <div
-        data-ref-name="colors"
         className="colors"
         onMouseDown={e => colorsMouseDown(e, "colors")}
         onMouseUp={colorsMouseUp}
         ref={colorsRef}
       >
-        <div className="picker" ref={colorPickerRef}></div>
+        <div className="picker" ref={colorsPickerRef}></div>
       </div>
 
-      <div className="colorGroup">
-        <div className="picker"></div>
+      <div
+        className="colorGroup"
+        onMouseDown={e => colorsMouseDown(e, "colorGroup")}
+        onMouseUp={colorsMouseUp}
+        ref={colorGroupRef}
+      >
+        <div className="picker" ref={colorGroupPickerRef}></div>
       </div>
 
       <div className="alphaChannel">
