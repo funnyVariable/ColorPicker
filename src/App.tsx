@@ -18,7 +18,6 @@ function App() {
   const colorsPickerMove = useCallback(
     ({ clientX, clientY }: clientCoords) => {
       if (!colorsRef.current) return;
-      console.log(isPicking);
 
       const refName = currentPicker.current;
       let currentRef;
@@ -39,7 +38,13 @@ function App() {
 
         // Clamping to ensure the picker stays within the bounds
         x = Math.max(0, Math.min(x, colorRect.width));
-        y = Math.max(0, Math.min(y, colorRect.height));
+        y = Math.max(
+          0,
+          Math.min(
+            y,
+            refName === "colorGroup" ? colorRect.height - 6 : colorRect.height
+          )
+        );
 
         if (refName !== "colorGroup")
           currentPickerRef.current.style.left = `${x}px`;
@@ -58,21 +63,24 @@ function App() {
     setIsPicking(true);
   };
 
-  const colorsMouseUp = () => {
+  const colorsMouseUp = useCallback(() => {
     setIsPicking(false);
-  };
+  }, []);
 
   // Color Pick Handling
   useEffect(() => {
     if (isPicking) {
       window.addEventListener("mousemove", colorsPickerMove);
+      window.addEventListener("mouseup", colorsMouseUp);
     } else {
       window.removeEventListener("mousemove", colorsPickerMove);
+      window.removeEventListener("mouseup", colorsMouseUp);
     }
 
     // Cleanup on component unmount or when isPicking changes
     return () => {
       window.removeEventListener("mousemove", colorsPickerMove);
+      window.removeEventListener("mouseup", colorsMouseUp);
     };
   }, [isPicking, colorsPickerMove]);
 
@@ -81,19 +89,21 @@ function App() {
       <div
         className="colors"
         onMouseDown={e => colorsMouseDown(e, "colors")}
-        onMouseUp={colorsMouseUp}
         ref={colorsRef}
       >
-        <div className="picker" ref={colorsPickerRef}></div>
+        <div className="picker" draggable="false" ref={colorsPickerRef}></div>
       </div>
 
       <div
         className="colorGroup"
         onMouseDown={e => colorsMouseDown(e, "colorGroup")}
-        onMouseUp={colorsMouseUp}
         ref={colorGroupRef}
       >
-        <div className="picker" ref={colorGroupPickerRef}></div>
+        <div
+          className="picker"
+          ref={colorGroupPickerRef}
+          draggable="false"
+        ></div>
       </div>
 
       <div className="alphaChannel">
