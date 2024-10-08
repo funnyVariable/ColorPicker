@@ -14,6 +14,9 @@ function App() {
   const colorGroupRef = useRef<HTMLDivElement | null>(null);
   const colorGroupPickerRef = useRef<HTMLDivElement | null>(null);
 
+  const alphaChannelRef = useRef<HTMLDivElement | null>(null);
+  const alphaChannelPickerRef = useRef<HTMLDivElement | null>(null);
+
   // Event Handling
   const colorsPickerMove = useCallback(
     ({ clientX, clientY }: clientCoords) => {
@@ -29,6 +32,9 @@ function App() {
       } else if (refName === "colorGroup") {
         currentRef = colorGroupRef;
         currentPickerRef = colorGroupPickerRef;
+      } else if (refName === "alphaChannel") {
+        currentRef = alphaChannelRef;
+        currentPickerRef = alphaChannelPickerRef;
       }
 
       if (currentRef?.current && currentPickerRef?.current) {
@@ -37,7 +43,13 @@ function App() {
         let y = clientY - colorRect.top;
 
         // Clamping to ensure the picker stays within the bounds
-        x = Math.max(0, Math.min(x, colorRect.width));
+        x = Math.max(
+          0,
+          Math.min(
+            x,
+            refName === "alphaChannel" ? colorRect.width - 8 : colorRect.width
+          )
+        );
         y = Math.max(
           0,
           Math.min(
@@ -48,7 +60,8 @@ function App() {
 
         if (refName !== "colorGroup")
           currentPickerRef.current.style.left = `${x}px`;
-        currentPickerRef.current.style.top = `${y}px`;
+        if (refName !== "alphaChannel")
+          currentPickerRef.current.style.top = `${y}px`;
       }
     },
     [isPicking]
@@ -106,8 +119,16 @@ function App() {
         ></div>
       </div>
 
-      <div className="alphaChannel">
-        <div className="picker"></div>
+      <div
+        className="alphaChannel"
+        onMouseDown={e => colorsMouseDown(e, "alphaChannel")}
+        ref={alphaChannelRef}
+      >
+        <div
+          className="picker"
+          ref={alphaChannelPickerRef}
+          draggable="false"
+        ></div>
       </div>
 
       <div className="pickedColor">
