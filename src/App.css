@@ -1,0 +1,69 @@
+.ColorPicker {
+  --size1: 85%;
+  --size2: 15%;
+}
+
+.ColorPicker {
+  width: 250px;
+  height: 250px;
+  position: relative;
+  border: solid 2px #bebebe;
+}
+.ColorPicker div {
+  position: absolute;
+}
+.ColorPicker .colors {
+  position: absolute;
+  width: var(--size1);
+  height: var(--size1);
+  overflow: hidden;
+}
+.ColorPicker .colorGroup {
+  height: var(--size1);
+  width: var(--size2);
+  border-left: inherit;
+  right: 0;
+}
+.ColorPicker .alphaChannel {
+  height: var(--size2);
+  width: var(--size1);
+  border-top: inherit;
+  bottom: 0;
+}
+
+.ColorPicker .pickedColor {
+  background-color: rgba(0, 0, 255, 0.4);
+  height: var(--size2);
+  width: var(--size2);
+  border-top: inherit;
+  border-left: inherit;
+  bottom: 0;
+  right: 0;
+}
+
+.ColorPicker .colors .picker {
+  border: solid #fff 1px;
+  border-radius: 50%;
+  outline: solid #000 1px;
+  width: 8px;
+  height: 8px;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+}
+.ColorPicker .colorGroup .picker,
+.ColorPicker .alphaChannel .picker {
+  border: solid 2px rgba(0, 0, 0, 0.75);
+  position: absolute;
+}
+
+.ColorPicker .colorGroup .picker {
+  width: calc(100% - 4px);
+  height: 2px;
+  top: 0;
+}
+.ColorPicker .alphaChannel .picker {
+  height: calc(100% - 4px);
+  width: 2px;
+  left: 50%;
+}
