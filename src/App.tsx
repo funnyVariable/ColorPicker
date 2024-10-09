@@ -12,7 +12,9 @@ function App() {
   const colorsPickerRef = useRef<HTMLDivElement | null>(null);
 
   const colorsCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const colorsCtx = useRef<CanvasRenderingContext2D | null>(null);
   const colorGroupCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const colorGroupCtx = useRef<CanvasRenderingContext2D | null>(null);
 
   const colorGroupRef = useRef<HTMLDivElement | null>(null);
   const colorGroupPickerRef = useRef<HTMLDivElement | null>(null);
@@ -50,21 +52,26 @@ function App() {
           0,
           Math.min(
             x,
-            refName === "alphaChannel" ? colorRect.width - 8 : colorRect.width
+            refName === "alphaChannel" ? colorRect.width : colorRect.width
           )
         );
         y = Math.max(
           0,
           Math.min(
             y,
-            refName === "colorGroup" ? colorRect.height - 6 : colorRect.height
+            refName === "colorGroup" ? colorRect.height : colorRect.height
           )
         );
 
-        if (refName !== "colorGroup")
+        if (refName !== "colorGroup") {
           currentPickerRef.current.style.left = `${x}px`;
+        }
         if (refName !== "alphaChannel")
           currentPickerRef.current.style.top = `${y}px`;
+
+        let pixel = colorsCtx.current!.getImageData(x, y, 1, 1)["data"];
+        let rgb = `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
+        console.log(rgb);
       }
     },
     [isPicking]
@@ -103,36 +110,64 @@ function App() {
   // Canvases
   useEffect(() => {
     // Colors Gradient
-    let colorsCanvas = colorsCanvasRef.current;
-    let colorsCtx = colorsCanvas?.getContext("2d");
+    let color = "rgba(0,0,255,1)"; // make dynamic
 
-    let color = "rgba(0,255,0,1)"; // make dynamic
-    if (colorsCtx) {
-      let gradientH = colorsCtx.createLinearGradient(
+    if (colorsCanvasRef.current && colorGroupCanvasRef.current) {
+      colorsCtx.current = colorsCanvasRef.current.getContext("2d", {
+        willReadFrequently: true,
+      });
+      colorGroupCtx.current = colorGroupCanvasRef.current.getContext("2d", {
+        willReadFrequently: true,
+      });
+    }
+
+    if (colorsCtx.current && colorsCanvasRef.current) {
+      colorsCanvasRef.current.width = 256;
+      colorsCanvasRef.current.height = 256;
+      console.log(colorsCtx.current.canvas.width);
+
+      let gradientH = colorsCtx.current.createLinearGradient(
         0,
         0,
-        colorsCtx.canvas.width,
+        colorsCtx.current.canvas.width,
         0
       );
       gradientH.addColorStop(0, "#fff");
       gradientH.addColorStop(1, color);
-      colorsCtx.fillStyle = gradientH;
-      colorsCtx.fillRect(0, 0, colorsCtx.canvas.width, colorsCtx.canvas.height);
+      colorsCtx.current.fillStyle = gradientH;
+      colorsCtx.current.fillRect(
+        0,
+        0,
+        colorsCtx.current.canvas.width,
+        colorsCtx.current.canvas.height
+      );
 
-      let gradientV = colorsCtx.createLinearGradient(0, 0, 0, 219);
+      let gradientV = colorsCtx.current.createLinearGradient(
+        0,
+        0,
+        0,
+        colorsCtx.current.canvas.height
+      );
       gradientV.addColorStop(0, "rgba(0,0,0,0)");
       gradientV.addColorStop(1, "#000");
-      colorsCtx.fillStyle = gradientV;
-      colorsCtx.fillRect(0, 0, colorsCtx.canvas.width, colorsCtx.canvas.height);
+      colorsCtx.current.fillStyle = gradientV;
+      colorsCtx.current.fillRect(
+        0,
+        0,
+        colorsCtx.current.canvas.width,
+        colorsCtx.current.canvas.height
+      );
 
       // ColorGroup Gradient
-
-      let colorGroupCanvas = colorGroupCanvasRef.current;
-      let colorGroupCtx = colorGroupCanvas?.getContext("2d");
-      if (colorGroupCtx && colorGroupCanvas) {
-        colorGroupCanvas.width = 39;
-        colorGroupCanvas.height = 219;
-        let gradient = colorGroupCtx.createLinearGradient(0, 0, 0, 219);
+      if (colorGroupCtx.current && colorGroupCanvasRef.current) {
+        colorGroupCanvasRef.current.width = 36;
+        colorGroupCanvasRef.current.height = 256;
+        let gradient = colorGroupCtx.current.createLinearGradient(
+          0,
+          0,
+          0,
+          colorGroupCanvasRef.current.height
+        );
         gradient.addColorStop(0, "rgb(255, 0, 0)");
         gradient.addColorStop(0.17, "rgb(255, 255, 0)");
         gradient.addColorStop(0.33, "rgb(0, 255, 0)");
@@ -140,8 +175,13 @@ function App() {
         gradient.addColorStop(0.66, "rgb(0, 0, 255)");
         gradient.addColorStop(0.83, "rgb(255, 0, 255)");
         gradient.addColorStop(1, "rgb(255, 0, 0)");
-        colorGroupCtx.fillStyle = gradient;
-        colorGroupCtx.fillRect(0, 0, 219, 219);
+        colorGroupCtx.current.fillStyle = gradient;
+        colorGroupCtx.current.fillRect(
+          0,
+          0,
+          colorGroupCanvasRef.current.width,
+          colorGroupCanvasRef.current.height
+        );
       }
     }
   }, []);
@@ -153,12 +193,7 @@ function App() {
         onMouseDown={e => colorsMouseDown(e, "colors")}
         ref={colorsRef}
       >
-        <canvas
-          className="colorCanvas"
-          width="219px"
-          height="219px"
-          ref={colorsCanvasRef}
-        ></canvas>
+        <canvas className="colorCanvas" ref={colorsCanvasRef}></canvas>
         <div className="picker" draggable="false" ref={colorsPickerRef} />
       </div>
 
@@ -167,7 +202,7 @@ function App() {
         onMouseDown={e => colorsMouseDown(e, "colorGroup")}
         ref={colorGroupRef}
       >
-        <canvas width="39px" height="219px" ref={colorGroupCanvasRef}></canvas>
+        <canvas ref={colorGroupCanvasRef}></canvas>
         <div className="picker" ref={colorGroupPickerRef} draggable="false" />
       </div>
 
