@@ -48,20 +48,8 @@ function App() {
         let y = clientY - colorRect.top;
 
         // Clamp
-        x = Math.max(
-          0,
-          Math.min(
-            x,
-            refName === "alphaChannel" ? colorRect.width : colorRect.width
-          )
-        );
-        y = Math.max(
-          0,
-          Math.min(
-            y,
-            refName === "colorGroup" ? colorRect.height : colorRect.height
-          )
-        );
+        x = Math.max(0, Math.min(x, colorRect.width));
+        y = Math.max(0, Math.min(y, colorRect.height));
 
         if (refName !== "colorGroup") {
           currentPickerRef.current.style.left = `${x}px`;
