@@ -104,7 +104,9 @@ function App() {
         onMouseDown={e => colorsMouseDown(e, "colors")}
         ref={colorsRef}
       >
-        <div className="picker" draggable="false" ref={colorsPickerRef}></div>
+        <div className="colorGradient1"></div>
+        <div className="colorGradient2"></div>
+        <div className="picker" draggable="false" ref={colorsPickerRef} />
       </div>
 
       <div
@@ -112,11 +114,7 @@ function App() {
         onMouseDown={e => colorsMouseDown(e, "colorGroup")}
         ref={colorGroupRef}
       >
-        <div
-          className="picker"
-          ref={colorGroupPickerRef}
-          draggable="false"
-        ></div>
+        <div className="picker" ref={colorGroupPickerRef} draggable="false" />
       </div>
 
       <div
@@ -124,11 +122,7 @@ function App() {
         onMouseDown={e => colorsMouseDown(e, "alphaChannel")}
         ref={alphaChannelRef}
       >
-        <div
-          className="picker"
-          ref={alphaChannelPickerRef}
-          draggable="false"
-        ></div>
+        <div className="picker" ref={alphaChannelPickerRef} draggable="false" />
       </div>
 
       <div className="pickedColor">
