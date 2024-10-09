@@ -11,6 +11,9 @@ function App() {
   const colorsRef = useRef<HTMLDivElement | null>(null);
   const colorsPickerRef = useRef<HTMLDivElement | null>(null);
 
+  const colorsCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const colorGroupCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
   const colorGroupRef = useRef<HTMLDivElement | null>(null);
   const colorGroupPickerRef = useRef<HTMLDivElement | null>(null);
 
@@ -42,7 +45,7 @@ function App() {
         let x = clientX - colorRect.left;
         let y = clientY - colorRect.top;
 
-        // Clamping to ensure the picker stays within the bounds
+        // Clamp
         x = Math.max(
           0,
           Math.min(
@@ -90,12 +93,58 @@ function App() {
       window.removeEventListener("mouseup", colorsMouseUp);
     }
 
-    // Cleanup on component unmount or when isPicking changes
+    // Cleanup
     return () => {
       window.removeEventListener("mousemove", colorsPickerMove);
       window.removeEventListener("mouseup", colorsMouseUp);
     };
   }, [isPicking, colorsPickerMove]);
+
+  // Canvases
+  useEffect(() => {
+    // Colors Gradient
+    let colorsCanvas = colorsCanvasRef.current;
+    let colorsCtx = colorsCanvas?.getContext("2d");
+
+    let color = "rgba(0,255,0,1)"; // make dynamic
+    if (colorsCtx) {
+      let gradientH = colorsCtx.createLinearGradient(
+        0,
+        0,
+        colorsCtx.canvas.width,
+        0
+      );
+      gradientH.addColorStop(0, "#fff");
+      gradientH.addColorStop(1, color);
+      colorsCtx.fillStyle = gradientH;
+      colorsCtx.fillRect(0, 0, colorsCtx.canvas.width, colorsCtx.canvas.height);
+
+      let gradientV = colorsCtx.createLinearGradient(0, 0, 0, 219);
+      gradientV.addColorStop(0, "rgba(0,0,0,0)");
+      gradientV.addColorStop(1, "#000");
+      colorsCtx.fillStyle = gradientV;
+      colorsCtx.fillRect(0, 0, colorsCtx.canvas.width, colorsCtx.canvas.height);
+
+      // ColorGroup Gradient
+
+      let colorGroupCanvas = colorGroupCanvasRef.current;
+      let colorGroupCtx = colorGroupCanvas?.getContext("2d");
+      if (colorGroupCtx && colorGroupCanvas) {
+        colorGroupCanvas.width = 39;
+        colorGroupCanvas.height = 219;
+        let gradient = colorGroupCtx.createLinearGradient(0, 0, 0, 219);
+        gradient.addColorStop(0, "rgb(255, 0, 0)");
+        gradient.addColorStop(0.17, "rgb(255, 255, 0)");
+        gradient.addColorStop(0.33, "rgb(0, 255, 0)");
+        gradient.addColorStop(0.5, "rgb(0, 255, 255)");
+        gradient.addColorStop(0.66, "rgb(0, 0, 255)");
+        gradient.addColorStop(0.83, "rgb(255, 0, 255)");
+        gradient.addColorStop(1, "rgb(255, 0, 0)");
+        colorGroupCtx.fillStyle = gradient;
+        colorGroupCtx.fillRect(0, 0, 219, 219);
+      }
+    }
+  }, []);
 
   return (
     <div className="ColorPicker">
@@ -104,8 +153,12 @@ function App() {
         onMouseDown={e => colorsMouseDown(e, "colors")}
         ref={colorsRef}
       >
-        <div className="colorGradient1"></div>
-        <div className="colorGradient2"></div>
+        <canvas
+          className="colorCanvas"
+          width="219px"
+          height="219px"
+          ref={colorsCanvasRef}
+        ></canvas>
         <div className="picker" draggable="false" ref={colorsPickerRef} />
       </div>
 
@@ -114,6 +167,7 @@ function App() {
         onMouseDown={e => colorsMouseDown(e, "colorGroup")}
         ref={colorGroupRef}
       >
+        <canvas width="39px" height="219px" ref={colorGroupCanvasRef}></canvas>
         <div className="picker" ref={colorGroupPickerRef} draggable="false" />
       </div>
 
