@@ -148,7 +148,7 @@ function App() {
 
       // ColorGroup Gradient
       if (colorGroupCtx.current && colorGroupCanvasRef.current) {
-        colorGroupCanvasRef.current.width = 36;
+        colorGroupCanvasRef.current.width = 40;
         colorGroupCanvasRef.current.height = 256;
         let gradient = colorGroupCtx.current.createLinearGradient(
           0,
