@@ -115,10 +115,10 @@ function App() {
       console.log(colorsCtx.current.canvas.width);
 
       let gradientH = colorsCtx.current.createLinearGradient(
-        0,
-        0,
+        1,
+        1,
         colorsCtx.current.canvas.width,
-        0
+        1
       );
       gradientH.addColorStop(0, "#fff");
       gradientH.addColorStop(1, color);
@@ -131,13 +131,13 @@ function App() {
       );
 
       let gradientV = colorsCtx.current.createLinearGradient(
-        0,
-        0,
-        0,
+        1,
+        1,
+        1,
         colorsCtx.current.canvas.height
       );
       gradientV.addColorStop(0, "rgba(0,0,0,0)");
-      gradientV.addColorStop(1, "#000");
+      gradientV.addColorStop(1, "rgb(0, 0, 0)");
       colorsCtx.current.fillStyle = gradientV;
       colorsCtx.current.fillRect(
         0,
