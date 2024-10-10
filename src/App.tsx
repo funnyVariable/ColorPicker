@@ -48,8 +48,8 @@ function App() {
         let y = clientY - colorRect.top;
 
         // Clamp
-        x = Math.max(0, Math.min(x, colorRect.width));
-        y = Math.max(0, Math.min(y, colorRect.height));
+        x = Math.max(0, Math.min(x, colorRect.width - 1));
+        y = Math.max(0, Math.min(y, colorRect.height - 1));
 
         if (refName !== "colorGroup") {
           currentPickerRef.current.style.left = `${x}px`;
@@ -59,7 +59,7 @@ function App() {
 
         let pixel = colorsCtx.current!.getImageData(x, y, 1, 1)["data"];
         let rgb = `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
-        console.log(rgb);
+        console.log(`{${Math.floor(x)} , ${Math.floor(y)}} ${rgb}`);
       }
     },
     [isPicking]
@@ -111,40 +111,24 @@ function App() {
 
     if (colorsCtx.current && colorsCanvasRef.current) {
       colorsCanvasRef.current.width = 256;
-      colorsCanvasRef.current.height = 256;
-      console.log(colorsCtx.current.canvas.width);
+  colorsCanvasRef.current.height = 256;
 
-      let gradientH = colorsCtx.current.createLinearGradient(
-        1,
-        1,
-        colorsCtx.current.canvas.width,
-        1
-      );
-      gradientH.addColorStop(0, "#fff");
-      gradientH.addColorStop(1, color);
-      colorsCtx.current.fillStyle = gradientH;
-      colorsCtx.current.fillRect(
-        0,
-        0,
-        colorsCtx.current.canvas.width,
-        colorsCtx.current.canvas.height
-      );
+  // Update gradient creation
+  let gradientH = colorsCtx.current.createLinearGradient(0, 0, colorsCtx.current.canvas.width, 0);
+  gradientH.addColorStop(0, "#fff");
+  gradientH.addColorStop(0.01, "#fff");
+  gradientH.addColorStop(0.99, color);
+  gradientH.addColorStop(1, color);
+  colorsCtx.current.fillStyle = gradientH;
+  colorsCtx.current.fillRect(0, 0, colorsCtx.current.canvas.width, colorsCtx.current.canvas.height);
 
-      let gradientV = colorsCtx.current.createLinearGradient(
-        1,
-        1,
-        1,
-        colorsCtx.current.canvas.height
-      );
-      gradientV.addColorStop(0, "rgba(0,0,0,0)");
-      gradientV.addColorStop(1, "rgb(0, 0, 0)");
-      colorsCtx.current.fillStyle = gradientV;
-      colorsCtx.current.fillRect(
-        0,
-        0,
-        colorsCtx.current.canvas.width,
-        colorsCtx.current.canvas.height
-      );
+  let gradientV = colorsCtx.current.createLinearGradient(0, 0, 0, colorsCtx.current.canvas.height);
+  gradientV.addColorStop(0, "rgba(0, 0, 0, 0)"); // Transparent at the top
+gradientV.addColorStop(0.01, "rgba(0, 0, 0, 0)"); // Ensure it's still transparent
+gradientV.addColorStop(0.99, "rgb(0, 0, 0)"); // Almost fully opaque black
+gradientV.addColorStop(1, "rgb(0, 0, 0)"); // Fully opaque black at the bottom
+  colorsCtx.current.fillStyle = gradientV;
+  colorsCtx.current.fillRect(0, 0, colorsCtx.current.canvas.width, colorsCtx.current.canvas.height);
 
       // ColorGroup Gradient
       if (colorGroupCtx.current && colorGroupCanvasRef.current) {
