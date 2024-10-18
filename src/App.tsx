@@ -17,6 +17,8 @@ function App() {
   const alphaChannelRef = useRef<HTMLDivElement | null>(null);
   const alphaChannelPickerRef = useRef<HTMLDivElement | null>(null);
 
+  const color = useRef("");
+
   // Event Handling
   const colorsPickerMove = useCallback(
     ({ clientX, clientY }: clientCoords) => {
@@ -43,8 +45,17 @@ function App() {
         let y = clientY - colorRect.top;
 
         // Clamp
-        x = Math.max(0, Math.min(x, colorRect.width - 1));
-        y = Math.max(0, Math.min(y, colorRect.height - 1));
+        x = Math.floor(Math.max(0, Math.min(x, colorRect.width - 1)));
+        y = Math.floor(Math.max(0, Math.min(y, colorRect.height - 1)));
+
+        const [r, g, b] = [
+          255 - Math.max(x, y),
+          255 - Math.max(x, y),
+          255 - Math.max(x, y),
+        ];
+        color.current = `rgb(${r},${g},${b})`;
+        console.clear();
+        console.log(color.current);
 
         if (refName !== "colorGroup") {
           currentPickerRef.current.style.left = `${x}px`;
@@ -101,6 +112,8 @@ function App() {
         onMouseDown={e => colorsMouseDown(e, "colors")}
         ref={colorsRef}
       >
+        <div className="gradient1"></div>
+        <div className="gradient2"></div>
         <div className="picker" draggable="false" ref={colorsPickerRef} />
       </div>
 
@@ -120,8 +133,13 @@ function App() {
         <div className="picker" ref={alphaChannelPickerRef} draggable="false" />
       </div>
 
-      <div className="pickedColor">
-        <div className="picker"></div>
+      <div
+        className="pickedColor"
+        style={color.current !== "" ? { backgroundColor: color.current } : {}}
+      >
+        <div className="picker" style={{ color: "red" }}>
+          {color.current}
+        </div>
       </div>
     </div>
   );

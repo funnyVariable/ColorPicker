@@ -18,6 +18,20 @@
   position: relative;
   background-color: #fff;
 }
+.ColorPicker .colors .gradient1,
+.ColorPicker .colors .gradient2 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.ColorPicker .colors .gradient1 {
+  background: linear-gradient(to left, #000, transparent);
+}
+.ColorPicker .colors .gradient2 {
+  background: linear-gradient(0deg, #000, transparent);
+}
 .ColorPicker .colorGroup {
   grid-area: 1 / 2 / 2 / 3;
   position: relative;
