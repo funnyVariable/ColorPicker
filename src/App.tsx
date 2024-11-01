@@ -48,37 +48,27 @@ function App() {
         x = Math.floor(Math.max(0, Math.min(x, colorRect.width - 1)));
         y = Math.floor(Math.max(0, Math.min(y, colorRect.height - 1)));
 
-        const [r, g, b] = [
-          255 - Math.max(x, y),
-          255 - Math.max(x, y),
-          255 - Math.max(x, y),
-        ];
-        color.current = `rgb(${r},${g},${b})`;
-        console.clear();
-        console.log(color.current);
-
         if (refName !== "colorGroup") {
           currentPickerRef.current.style.left = `${x}px`;
         }
-        if (refName !== "alphaChannel")
-          currentPickerRef.current.style.top = `${y}px`;
+        if (refName !== "alphaChannel") currentPickerRef.current.style.top = `${y}px`;
 
-        // for (let i = 0; i < 256; i++) {
-        //   let [x2, y2] = [0, i];
-        // let pixelPrev = colorsCtx.current!.getImageData(x2, y2 - 1, 1, 1)["data"];
-        // let pixel = colorsCtx.current!.getImageData(x2, y2, 1, 1)["data"];
-        // let rgb = `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
-        // console.log(`${pixelPrev[0] - pixel[0] === 0 || pixelPrev[0] - pixel[0] === 1} pixel: ${pixel} pixelPrev${pixelPrev}`)
-        // }
+        function calculateColor(x: number, y: number) {
+          const r = 255 - Math.max(x, y);
+          const g = 255 - Math.max(x, y);
+          const b = 255 - y;
+
+          return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        color.current = calculateColor(x, y);
+        console.log(calculateColor(x, y));
       }
     },
     [isPicking]
   );
 
-  const colorsMouseDown = (
-    { clientX, clientY }: clientCoords,
-    refName: currentPickerType
-  ) => {
+  const colorsMouseDown = ({ clientX, clientY }: clientCoords, refName: currentPickerType) => {
     currentPicker.current = refName;
     colorsPickerMove({ clientX, clientY });
     setIsPicking(true);
@@ -107,36 +97,21 @@ function App() {
 
   return (
     <div className="ColorPicker">
-      <div
-        className="colors"
-        onMouseDown={e => colorsMouseDown(e, "colors")}
-        ref={colorsRef}
-      >
+      <div className="colors" onMouseDown={e => colorsMouseDown(e, "colors")} ref={colorsRef}>
         <div className="gradient1"></div>
         <div className="gradient2"></div>
         <div className="picker" draggable="false" ref={colorsPickerRef} />
       </div>
 
-      <div
-        className="colorGroup"
-        onMouseDown={e => colorsMouseDown(e, "colorGroup")}
-        ref={colorGroupRef}
-      >
+      <div className="colorGroup" onMouseDown={e => colorsMouseDown(e, "colorGroup")} ref={colorGroupRef}>
         <div className="picker" ref={colorGroupPickerRef} draggable="false" />
       </div>
 
-      <div
-        className="alphaChannel"
-        onMouseDown={e => colorsMouseDown(e, "alphaChannel")}
-        ref={alphaChannelRef}
-      >
+      <div className="alphaChannel" onMouseDown={e => colorsMouseDown(e, "alphaChannel")} ref={alphaChannelRef}>
         <div className="picker" ref={alphaChannelPickerRef} draggable="false" />
       </div>
 
-      <div
-        className="pickedColor"
-        style={color.current !== "" ? { backgroundColor: color.current } : {}}
-      >
+      <div className="pickedColor" style={color.current !== "" ? { backgroundColor: color.current } : {}}>
         <div className="picker" style={{ color: "red" }}>
           {color.current}
         </div>
