@@ -47,10 +47,10 @@ function App() {
       x = Math.floor(Math.max(0, Math.min(x, colorRect.width - 1)));
       y = Math.floor(Math.max(0, Math.min(y, colorRect.height - 1)));
 
-      if (refName !== "colorGroup") {
-        currentPickerRef.current.style.left = `${x}px`;
-      }
+      if (refName !== "colorGroup") currentPickerRef.current.style.left = `${x}px`;
       if (refName !== "alphaChannel") currentPickerRef.current.style.top = `${y}px`;
+      if (refName === "colorGroup") currentPickerRef.current.style.top = `${Math.min(y, 254)}px`;
+      if (refName === "alphaChannel") currentPickerRef.current.style.left = `${Math.min(x, 254)}px`;
 
       function calculateColor(x: number, y: number) {
         const r = Math.round(((255 - x) * (255 - y)) / 255);
