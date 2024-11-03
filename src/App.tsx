@@ -20,53 +20,50 @@ function App() {
   const color = useRef("");
 
   // Event Handling
-  const colorsPickerMove = useCallback(
-    ({ clientX, clientY }: clientCoords) => {
-      if (!colorsRef.current) return;
+  const colorsPickerMove = useCallback(({ clientX, clientY }: clientCoords) => {
+    if (!colorsRef.current) return;
 
-      const refName = currentPicker.current;
-      let currentRef;
-      let currentPickerRef;
+    const refName = currentPicker.current;
+    let currentRef;
+    let currentPickerRef;
 
-      if (refName === "colors") {
-        currentRef = colorsRef;
-        currentPickerRef = colorsPickerRef;
-      } else if (refName === "colorGroup") {
-        currentRef = colorGroupRef;
-        currentPickerRef = colorGroupPickerRef;
-      } else if (refName === "alphaChannel") {
-        currentRef = alphaChannelRef;
-        currentPickerRef = alphaChannelPickerRef;
+    if (refName === "colors") {
+      currentRef = colorsRef;
+      currentPickerRef = colorsPickerRef;
+    } else if (refName === "colorGroup") {
+      currentRef = colorGroupRef;
+      currentPickerRef = colorGroupPickerRef;
+    } else if (refName === "alphaChannel") {
+      currentRef = alphaChannelRef;
+      currentPickerRef = alphaChannelPickerRef;
+    }
+
+    if (currentRef?.current && currentPickerRef?.current) {
+      const colorRect = currentRef.current.getBoundingClientRect();
+      let x = clientX - colorRect.left;
+      let y = clientY - colorRect.top;
+
+      // Clamp
+      x = Math.floor(Math.max(0, Math.min(x, colorRect.width - 1)));
+      y = Math.floor(Math.max(0, Math.min(y, colorRect.height - 1)));
+
+      if (refName !== "colorGroup") {
+        currentPickerRef.current.style.left = `${x}px`;
+      }
+      if (refName !== "alphaChannel") currentPickerRef.current.style.top = `${y}px`;
+
+      function calculateColor(x: number, y: number) {
+        const r = Math.round(((255 - x) * (255 - y)) / 255);
+        const g = Math.round(((255 - x) * (255 - y)) / 255);
+        const b = 255 - y;
+
+        return `rgb(${r}, ${g}, ${b})`;
       }
 
-      if (currentRef?.current && currentPickerRef?.current) {
-        const colorRect = currentRef.current.getBoundingClientRect();
-        let x = clientX - colorRect.left;
-        let y = clientY - colorRect.top;
-
-        // Clamp
-        x = Math.floor(Math.max(0, Math.min(x, colorRect.width - 1)));
-        y = Math.floor(Math.max(0, Math.min(y, colorRect.height - 1)));
-
-        if (refName !== "colorGroup") {
-          currentPickerRef.current.style.left = `${x}px`;
-        }
-        if (refName !== "alphaChannel") currentPickerRef.current.style.top = `${y}px`;
-
-        function calculateColor(x: number, y: number) {
-          const r = 255 - Math.max(x, y);
-          const g = 255 - Math.max(x, y);
-          const b = 255 - y;
-
-          return `rgb(${r}, ${g}, ${b})`;
-        }
-
-        color.current = calculateColor(x, y);
-        console.log(calculateColor(x, y));
-      }
-    },
-    [isPicking]
-  );
+      color.current = calculateColor(x, y);
+      console.log(calculateColor(x, y));
+    }
+  }, []);
 
   const colorsMouseDown = ({ clientX, clientY }: clientCoords, refName: currentPickerType) => {
     currentPicker.current = refName;
@@ -93,7 +90,7 @@ function App() {
       window.removeEventListener("mousemove", colorsPickerMove);
       window.removeEventListener("mouseup", colorsMouseUp);
     };
-  }, [isPicking, colorsPickerMove]);
+  }, [isPicking, colorsPickerMove, colorsMouseUp]);
 
   return (
     <div className="ColorPicker">
