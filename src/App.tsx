@@ -61,7 +61,7 @@ function App() {
       }
 
       color.current = calculateColor(x, y);
-      console.log(calculateColor(x, y));
+      console.log(y);
     }
   }, []);
 
