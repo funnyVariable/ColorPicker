@@ -44,8 +44,8 @@ function App() {
       let y = clientY - colorRect.top;
 
       // Clamp
-      x = Math.floor(Math.max(0, Math.min(x, colorRect.width - 1)));
-      y = Math.floor(Math.max(0, Math.min(y, colorRect.height - 1)));
+      x = Math.max(0, Math.min(x, colorRect.width - 1));
+      y = Math.max(0, Math.min(y, colorRect.height - 1));
 
       if (refName !== "colorGroup") currentPickerRef.current.style.left = `${x}px`;
       if (refName !== "alphaChannel") currentPickerRef.current.style.top = `${y}px`;
@@ -55,7 +55,7 @@ function App() {
       function calculateColor(x: number, y: number) {
         const r = Math.round(((255 - x) * (255 - y)) / 255);
         const g = Math.round(((255 - x) * (255 - y)) / 255);
-        const b = 255 - y;
+        const b = Math.round(255 - y);
 
         return `rgb(${r}, ${g}, ${b})`;
       }
@@ -67,7 +67,13 @@ function App() {
 
         let block = "";
 
-        const [_17, _33, _50, _66, _83] = [(17 / 100) * 255, (33 / 100) * 255, (50 / 100) * 255, (66 / 100) * 255, (83 / 100) * 255];
+        const [_17, _33, _50, _66, _83] = [
+          (17 / 100) * 255,
+          (33 / 100) * 255,
+          (50 / 100) * 255,
+          (66 / 100) * 255,
+          (83 / 100) * 255,
+        ];
 
         if (0 <= y && y <= _17) {
           r = 255;
@@ -79,7 +85,7 @@ function App() {
           r = Math.round(255 * (1 - (y - _17) / (_33 - _17)));
           g = 0;
           b = 255;
-          console.log(`y: ${y}\n_17: ${_17}\n_33: ${_33}`);
+          console.log(y);
 
           block = "SECOND_BLOCK";
         }
@@ -129,15 +135,26 @@ function App() {
         <div className="picker" draggable="false" ref={colorsPickerRef} />
       </div>
 
-      <div className="colorGroup" onMouseDown={e => colorsMouseDown(e, "colorGroup")} ref={colorGroupRef}>
+      <div
+        className="colorGroup"
+        onMouseDown={e => colorsMouseDown(e, "colorGroup")}
+        ref={colorGroupRef}
+      >
         <div className="picker" ref={colorGroupPickerRef} draggable="false" />
       </div>
 
-      <div className="alphaChannel" onMouseDown={e => colorsMouseDown(e, "alphaChannel")} ref={alphaChannelRef}>
+      <div
+        className="alphaChannel"
+        onMouseDown={e => colorsMouseDown(e, "alphaChannel")}
+        ref={alphaChannelRef}
+      >
         <div className="picker" ref={alphaChannelPickerRef} draggable="false" />
       </div>
 
-      <div className="pickedColor" style={color.current !== "" ? { backgroundColor: color.current } : {}}>
+      <div
+        className="pickedColor"
+        style={color.current !== "" ? { backgroundColor: color.current } : {}}
+      >
         <div className="picker" style={{ color: "red" }}>
           {color.current}
         </div>
