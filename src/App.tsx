@@ -60,8 +60,37 @@ function App() {
         return `rgb(${r}, ${g}, ${b})`;
       }
 
+      function calculateColorGroup(y: number) {
+        let r;
+        let g;
+        let b;
+
+        let block = "";
+
+        const [_17, _33, _50, _66, _83] = [(17 / 100) * 255, (33 / 100) * 255, (50 / 100) * 255, (66 / 100) * 255, (83 / 100) * 255];
+
+        if (0 <= y && y <= _17) {
+          r = 255;
+          g = 0;
+          b = Math.round((y / _17) * 255);
+
+          block = "FIRST_BLOCK";
+        } else if (_17 < y && y <= _33) {
+          r = Math.round(255 * (1 - (y - _17) / (_33 - _17)));
+          g = 0;
+          b = 255;
+          console.log(`y: ${y}\n_17: ${_17}\n_33: ${_33}`);
+
+          block = "SECOND_BLOCK";
+        }
+
+        return `rgb(${r}, ${g}, ${b}) ${block}`;
+      }
+
       color.current = calculateColor(x, y);
+      console.log(calculateColorGroup(y));
       console.log(y);
+      // clientY potential bug
     }
   }, []);
 
