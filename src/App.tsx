@@ -88,6 +88,34 @@ function App() {
           console.log(y);
 
           block = "SECOND_BLOCK";
+        } else if (_33 < y && y <= _50) {
+          r = 0;
+          g = Math.round(255 * ((y - _33) / (_50 - _33)));
+          b = 255;
+          console.log(y);
+
+          block = "THIRD_BLOCK";
+        } else if (_50 < y && y <= _66) {
+          r = 0;
+          g = 255;
+          b = 0;
+          console.log(y);
+
+          block = "FOURTH_BLOCK";
+        } else if (_66 < y && y <= _83) {
+          r = Math.round(255 * ((y - _66) / (_83 - _66)));
+          g = 255;
+          b = 0;
+          console.log(y);
+
+          block = "FIFTH_BLOCK";
+        } else if (_83 < y && y <= 255) {
+          r = 255;
+          g = Math.round(255 * (1 - (y - _83) / (255 - _83)));
+          b = 0;
+          console.log(y);
+
+          block = "SIXTH_BLOCK";
         }
 
         return `rgb(${r}, ${g}, ${b}) ${block}`;
@@ -95,7 +123,6 @@ function App() {
 
       color.current = calculateColor(x, y);
       console.log(calculateColorGroup(y));
-      console.log(y);
       // clientY potential bug
     }
   }, []);
