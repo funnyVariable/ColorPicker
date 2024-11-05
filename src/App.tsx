@@ -18,6 +18,7 @@ function App() {
   const alphaChannelPickerRef = useRef<HTMLDivElement | null>(null);
 
   const color = useRef("");
+  // const colorGroup = useRef("");
 
   // Event Handling
   const colorsPickerMove = useCallback(({ clientX, clientY }: clientCoords) => {
@@ -47,83 +48,95 @@ function App() {
       x = Math.max(0, Math.min(x, colorRect.width - 1));
       y = Math.max(0, Math.min(y, colorRect.height - 1));
 
-      if (refName !== "colorGroup") currentPickerRef.current.style.left = `${x}px`;
-      if (refName !== "alphaChannel") currentPickerRef.current.style.top = `${y}px`;
-      if (refName === "colorGroup") currentPickerRef.current.style.top = `${Math.min(y, 254)}px`;
-      if (refName === "alphaChannel") currentPickerRef.current.style.left = `${Math.min(x, 254)}px`;
+      // #region ------ Colors Event ------
+      if (refName === "colors") {
+        function calculateColor(x: number, y: number) {
+          const r = Math.round(((255 - x) * (255 - y)) / 255);
+          const g = Math.round(((255 - x) * (255 - y)) / 255);
+          const b = Math.round(255 - y);
 
-      function calculateColor(x: number, y: number) {
-        const r = Math.round(((255 - x) * (255 - y)) / 255);
-        const g = Math.round(((255 - x) * (255 - y)) / 255);
-        const b = Math.round(255 - y);
-
-        return `rgb(${r}, ${g}, ${b})`;
-      }
-
-      function calculateColorGroup(y: number) {
-        let r;
-        let g;
-        let b;
-
-        let block = "";
-
-        const [_17, _33, _50, _66, _83] = [
-          (17 / 100) * 255,
-          (33 / 100) * 255,
-          (50 / 100) * 255,
-          (66 / 100) * 255,
-          (83 / 100) * 255,
-        ];
-
-        if (0 <= y && y <= _17) {
-          r = 255;
-          g = 0;
-          b = Math.round((y / _17) * 255);
-
-          block = "FIRST_BLOCK";
-        } else if (_17 < y && y <= _33) {
-          r = Math.round(255 * (1 - (y - _17) / (_33 - _17)));
-          g = 0;
-          b = 255;
-          console.log(y);
-
-          block = "SECOND_BLOCK";
-        } else if (_33 < y && y <= _50) {
-          r = 0;
-          g = Math.round(255 * ((y - _33) / (_50 - _33)));
-          b = 255;
-          console.log(y);
-
-          block = "THIRD_BLOCK";
-        } else if (_50 < y && y <= _66) {
-          r = 0;
-          g = 255;
-          b = 0;
-          console.log(y);
-
-          block = "FOURTH_BLOCK";
-        } else if (_66 < y && y <= _83) {
-          r = Math.round(255 * ((y - _66) / (_83 - _66)));
-          g = 255;
-          b = 0;
-          console.log(y);
-
-          block = "FIFTH_BLOCK";
-        } else if (_83 < y && y <= 255) {
-          r = 255;
-          g = Math.round(255 * (1 - (y - _83) / (255 - _83)));
-          b = 0;
-          console.log(y);
-
-          block = "SIXTH_BLOCK";
+          return `rgb(${r}, ${g}, ${b})`;
         }
 
-        return `rgb(${r}, ${g}, ${b}) ${block}`;
+        currentPickerRef.current.style.top = `${y}px`;
+        currentPickerRef.current.style.left = `${x}px`;
+        color.current = calculateColor(x, y);
       }
 
-      color.current = calculateColor(x, y);
-      console.log(calculateColorGroup(y));
-      // clientY potential bug
+      // #region ------ ColorGroup Event ------
+      if (refName === "colorGroup") {
+        currentPickerRef.current.style.top = `${Math.min(y, 254)}px`;
+
+        function calculateColorGroup(y: number) {
+          let r;
+          let g;
+          let b;
+
+          let block = "";
+
+          const [_17, _33, _50, _66, _83] = [
+            (17 / 100) * 255,
+            (33 / 100) * 255,
+            (50 / 100) * 255,
+            (66 / 100) * 255,
+            (83 / 100) * 255,
+          ];
+
+          if (0 <= y && y <= _17) {
+            r = 255;
+            g = 0;
+            b = Math.round((y / _17) * 255);
+
+            block = "FIRST_BLOCK";
+          } else if (_17 < y && y <= _33) {
+            r = Math.round(255 * (1 - (y - _17) / (_33 - _17)));
+            g = 0;
+            b = 255;
+            console.log(y);
+
+            block = "SECOND_BLOCK";
+          } else if (_33 < y && y <= _50) {
+            r = 0;
+            g = Math.round(255 * ((y - _33) / (_50 - _33)));
+            b = 255;
+            console.log(y);
+
+            block = "THIRD_BLOCK";
+          } else if (_50 < y && y <= _66) {
+            r = 0;
+            g = 255;
+            b = 0;
+            console.log(y);
+
+            block = "FOURTH_BLOCK";
+          } else if (_66 < y && y <= _83) {
+            r = Math.round(255 * ((y - _66) / (_83 - _66)));
+            g = 255;
+            b = 0;
+            console.log(y);
+
+            block = "FIFTH_BLOCK";
+          } else if (_83 < y && y <= 255) {
+            r = 255;
+            g = Math.round(255 * (1 - (y - _83) / (255 - _83)));
+            b = 0;
+            console.log(y);
+
+            block = "SIXTH_BLOCK";
+          }
+
+          return `rgb(${r}, ${g}, ${b}) ${block}`;
+        }
+
+        currentPickerRef.current.style.top = `${y}px`;
+        console.log(calculateColorGroup(y));
+      }
+
+      // #region ------ AlphaChannel Event ------
+      if (refName === "alphaChannel") {
+        currentPickerRef.current.style.left = `${Math.min(x, 254)}px`;
+        currentPickerRef.current.style.left = `${x}px`;
+      }
     }
   }, []);
 
