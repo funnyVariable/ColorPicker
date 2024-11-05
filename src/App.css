@@ -27,7 +27,7 @@
   left: 0;
 }
 .ColorPicker .colors .gradient1 {
-  background: linear-gradient(to left, #00f, transparent);
+  background: linear-gradient(to left, rgb(183, 0, 255), transparent);
 }
 .ColorPicker .colors .gradient2 {
   background: linear-gradient(0deg, #000, transparent);

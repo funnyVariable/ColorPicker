@@ -3,6 +3,7 @@ import "./App.css";
 
 type currentPickerType = "colors" | "colorGroup" | "alphaChannel" | "";
 type clientCoords = { clientX: number; clientY: number };
+type rgb = [number, number, number];
 
 function App() {
   const [isPicking, setIsPicking] = useState(false);
@@ -50,17 +51,17 @@ function App() {
 
       // #region ------ Colors Event ------
       if (refName === "colors") {
-        function calculateColor(x: number, y: number) {
-          const r = Math.round(((255 - x) * (255 - y)) / 255);
-          const g = Math.round(((255 - x) * (255 - y)) / 255);
-          const b = Math.round(255 - y);
+        function calculateColor(x: number, y: number, [R, G, B]: rgb) {
+          const r = Math.round((1 - y / 255) * ((255 - R) * (1 - x / 255) + R));
+          const g = Math.round((1 - y / 255) * ((255 - G) * (1 - x / 255) + G));
+          const b = Math.round((1 - y / 255) * ((255 - B) * (1 - x / 255) + B));
 
           return `rgb(${r}, ${g}, ${b})`;
         }
 
         currentPickerRef.current.style.top = `${y}px`;
         currentPickerRef.current.style.left = `${x}px`;
-        color.current = calculateColor(x, y);
+        color.current = calculateColor(x, y, [183, 0, 255]);
       }
 
       // #region ------ ColorGroup Event ------
