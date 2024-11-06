@@ -4,7 +4,7 @@ import "./App.css";
 type currentPickerType = "colors" | "colorGroup" | "alphaChannel" | "";
 type clientCoords = { clientX: number; clientY: number };
 type rgb = [number, number, number];
-type color = [number, number, number, number, number];
+type color = { r: number; g: number; b: number; x: number; y: number };
 
 function App() {
   const [isPicking, setIsPicking] = useState(false);
@@ -19,7 +19,7 @@ function App() {
   const alphaChannelRef = useRef<HTMLDivElement | null>(null);
   const alphaChannelPickerRef = useRef<HTMLDivElement | null>(null);
 
-  const [color, setColor] = useState<color>([255, 0, 0, 255, 0]);
+  const [color, setColor] = useState<color>({ r: 255, g: 0, b: 0, x: 255, y: 0 });
   const colorGroup = useRef<rgb>([255, 0, 0]);
 
   // Event Handling
@@ -57,7 +57,7 @@ function App() {
         const g = Math.round((1 - y / 255) * ((255 - G) * (1 - x / 255) + G));
         const b = Math.round((1 - y / 255) * ((255 - B) * (1 - x / 255) + B));
 
-        return [r, g, b, x, y];
+        return { r, g, b, x, y };
       }
 
       // #region ------ Colors Event ------
@@ -114,7 +114,7 @@ function App() {
         }
 
         colorGroup.current = calculateColorGroup(y);
-        setColor(prev => calculateColor(prev[3], prev[4]));
+        setColor(prev => calculateColor(prev.x, prev.y));
         currentPickerRef.current.style.top = `${y}px`;
       }
 
@@ -184,10 +184,10 @@ function App() {
 
       <div
         className="pickedColor"
-        style={{ backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})` }}
+        style={{ backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})` }}
       >
         <div className="picker" style={{ color: "red" }}>
-          {`rgb(${color[0]}, ${color[1]}, ${color[2]})`}
+          {`rgb(${color.r}, ${color.g}, ${color.b})`}
         </div>
       </div>
     </div>
