@@ -99,7 +99,7 @@ function App() {
           } else if (_50 < y && y <= _66) {
             r = 0;
             g = 255;
-            b = 0;
+            b = Math.round(255 * (1 - (y - _50) / (_66 - _50)));
           } else if (_66 < y && y <= _83) {
             r = Math.round(255 * ((y - _66) / (_83 - _66)));
             g = 255;
