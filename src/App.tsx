@@ -4,7 +4,7 @@ import "./App.css";
 type currentPickerType = "colors" | "colorGroup" | "alphaChannel" | "";
 type clientCoords = { clientX: number; clientY: number };
 type rgb = [number, number, number];
-type color = { r: number; g: number; b: number; x: number; y: number };
+type color = { r: number; g: number; b: number; a: number; x: number; y: number };
 
 function App() {
   const [isPicking, setIsPicking] = useState(false);
@@ -19,8 +19,9 @@ function App() {
   const alphaChannelRef = useRef<HTMLDivElement | null>(null);
   const alphaChannelPickerRef = useRef<HTMLDivElement | null>(null);
 
-  const [color, setColor] = useState<color>({ r: 255, g: 0, b: 0, x: 255, y: 0 });
+  const [color, setColor] = useState<color>({ r: 255, g: 0, b: 0, a: 1, x: 255, y: 0 });
   const colorGroup = useRef<rgb>([255, 0, 0]);
+  const alphaChannel = useRef<number>(1);
 
   // Event Handling
   const colorsPickerMove = useCallback(({ clientX, clientY }: clientCoords) => {
@@ -50,7 +51,7 @@ function App() {
       x = Math.max(0, Math.min(x, colorRect.width - 1));
       y = Math.max(0, Math.min(y, colorRect.height - 1));
 
-      function calculateColor(x: number, y: number): color {
+      function calculateColor(x: number, y: number): Omit<color, "a"> {
         const [R, G, B] = colorGroup.current;
 
         const r = Math.round((1 - y / 255) * ((255 - R) * (1 - x / 255) + R));
@@ -64,7 +65,7 @@ function App() {
       if (refName === "colors") {
         currentPickerRef.current.style.top = `${y}px`;
         currentPickerRef.current.style.left = `${x}px`;
-        setColor(calculateColor(x, y));
+        setColor(prev => ({ ...prev, ...calculateColor(x, y) }));
       }
 
       // #region ------ ColorGroup Event ------
@@ -114,14 +115,17 @@ function App() {
         }
 
         colorGroup.current = calculateColorGroup(y);
-        setColor(prev => calculateColor(prev.x, prev.y));
+        setColor(prev => ({ ...prev, ...calculateColor(prev.x, prev.y) }));
         currentPickerRef.current.style.top = `${y}px`;
       }
 
       // #region ------ AlphaChannel Event ------
       if (refName === "alphaChannel") {
+        const a = parseFloat((x / 255).toFixed(3));
+
         currentPickerRef.current.style.left = `${Math.min(x, 254)}px`;
-        currentPickerRef.current.style.left = `${x}px`;
+        setColor(prev => ({ ...prev, a: a }));
+        alphaChannel.current = a;
       }
     }
   }, []);
@@ -180,14 +184,22 @@ function App() {
         ref={alphaChannelRef}
       >
         <div className="picker" ref={alphaChannelPickerRef} />
+        <div
+          className="transparency"
+          style={{
+            background: `linear-gradient(to right, transparent, rgb(${color.r}, ${color.g}, ${color.b})`,
+          }}
+        />
       </div>
 
       <div
         className="pickedColor"
-        style={{ backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})` }}
+        style={{ backgroundColor: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})` }}
       >
         <div className="picker" style={{ color: "red" }}>
-          {`rgb(${color.r}, ${color.g}, ${color.b})`}
+          {`rgb(${color.r}, ${color.g}, ${color.b}${
+            color.a < 1 ? ", " + alphaChannel.current : ""
+          })`}
         </div>
       </div>
     </div>

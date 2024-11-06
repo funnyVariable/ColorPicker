@@ -8,9 +8,16 @@
   background-color: #bebebe;
   box-sizing: border-box;
   width: fit-content;
+  outline: 1px solid #000;
 }
 .ColorPicker * {
   box-sizing: border-box;
+}
+.ColorPicker .colorGroup,
+.ColorPicker .colors,
+.ColorPicker .alphaChannel,
+.ColorPicker .pickedColor {
+  outline: 1px solid #000;
 }
 .ColorPicker .colors {
   grid-area: 1 / 1 / 2 / 2;
@@ -50,6 +57,10 @@
   background-color: #fff;
   grid-area: 2 / 1 / 3 / 2;
   position: relative;
+}
+.ColorPicker .alphaChannel .transparency {
+  background: linear-gradient(to right, transparent, #f00);
+  height: 100%;
 }
 
 .ColorPicker .pickedColor {
