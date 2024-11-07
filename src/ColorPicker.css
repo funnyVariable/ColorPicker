@@ -100,6 +100,7 @@
   transform: translate(-50%, -50%);
   z-index: 2;
   margin: 0;
+  user-select: none;
 }
 .ColorPicker .picker {
   position: absolute;
