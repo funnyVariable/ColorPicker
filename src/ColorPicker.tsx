@@ -165,7 +165,10 @@ function ColorPicker() {
           className="color-preview"
           style={{ backgroundColor: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})` }}
         />
-        <p className="color-code">{`rgb(${color.r}, ${color.g}, ${color.b}${
+        <p
+          className="color-code"
+          style={{ color: color.r < 170 && color.b < 170 && color.g < 170 ? "#fff" : "#000" }}
+        >{`rgb(${color.r}, ${color.g}, ${color.b}${
           color.a < 1 ? ", " + alphaChannel.current : ""
         })`}</p>
       </div>
