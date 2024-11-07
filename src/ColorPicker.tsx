@@ -121,9 +121,9 @@ function ColorPicker() {
 
       // #region ------ AlphaChannel Event ------
       if (refName === "alphaChannel") {
-        const a = parseFloat((x / 255).toFixed(3));
+        const a = parseFloat((1 - y / 255).toFixed(3));
 
-        currentPickerRef.current.style.left = `${Math.min(x, 254)}px`;
+        currentPickerRef.current.style.top = `${Math.min(y, 254)}px`;
         setColor(prev => ({ ...prev, a: a }));
         alphaChannel.current = a;
       }
@@ -159,6 +159,16 @@ function ColorPicker() {
 
   return (
     <div className="ColorPicker">
+      <div className="pickedColor">
+        <div className="transparency" />
+        <div
+          className="color-preview"
+          style={{ backgroundColor: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})` }}
+        />
+        <p className="color-code">{`rgb(${color.r}, ${color.g}, ${color.b}${
+          color.a < 1 ? ", " + alphaChannel.current : ""
+        })`}</p>
+      </div>
       <div className="colors" onMouseDown={e => colorsMouseDown(e, "colors")} ref={colorsRef}>
         <div
           className="gradient1"
@@ -184,23 +194,13 @@ function ColorPicker() {
         ref={alphaChannelRef}
       >
         <div className="picker" ref={alphaChannelPickerRef} />
+        <div className="transparency" />
         <div
-          className="transparency"
+          className="color-preview"
           style={{
-            background: `linear-gradient(to right, transparent, rgb(${color.r}, ${color.g}, ${color.b})`,
+            background: `linear-gradient(to top, transparent, rgb(${color.r}, ${color.g}, ${color.b})`,
           }}
         />
-      </div>
-
-      <div
-        className="pickedColor"
-        style={{ backgroundColor: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})` }}
-      >
-        <div className="picker" style={{ color: "red" }}>
-          {`rgb(${color.r}, ${color.g}, ${color.b}${
-            color.a < 1 ? ", " + alphaChannel.current : ""
-          })`}
-        </div>
       </div>
     </div>
   );

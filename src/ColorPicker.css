@@ -1,11 +1,12 @@
 .ColorPicker {
   display: grid;
-  grid-template-columns: 256px 40px;
-  grid-template-rows: 256px 40px;
-  grid-gap: 4px;
+  grid-template-columns: 256px repeat(2, 40px);
+  grid-template-rows: 40px 256px;
+  grid-column-gap: 12px;
+  grid-row-gap: 4px;
   box-sizing: border-box;
-  border: solid 4px #bebebe;
-  background-color: #bebebe;
+  border: solid 4px #eee;
+  background-color: #eee;
   box-sizing: border-box;
   width: fit-content;
   outline: 1px solid #000;
@@ -20,7 +21,7 @@
   outline: 1px solid #000;
 }
 .ColorPicker .colors {
-  grid-area: 1 / 1 / 2 / 2;
+  grid-area: 2 / 1 / 3 / 2;
   overflow: hidden;
   position: relative;
   background-color: #fff;
@@ -40,7 +41,7 @@
   background: linear-gradient(0deg, #000, transparent);
 }
 .ColorPicker .colorGroup {
-  grid-area: 1 / 2 / 2 / 3;
+  grid-area: 2 / 2 / 3 / 3;
   position: relative;
   background: linear-gradient(
     to top,
@@ -55,17 +56,50 @@
 }
 .ColorPicker .alphaChannel {
   background-color: #fff;
-  grid-area: 2 / 1 / 3 / 2;
+  grid-area: 2 / 3 / 3 / 4;
   position: relative;
 }
 .ColorPicker .alphaChannel .transparency {
-  background: linear-gradient(to right, transparent, #f00);
+  background-image: url("./transparency2.svg");
+  width: 100%;
   height: 100%;
+  position: absolute;
+  z-index: 0;
+}
+.ColorPicker .alphaChannel .color-preview {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+}
+.ColorPicker .alphaChannel .picker {
+  z-index: 2;
 }
 
 .ColorPicker .pickedColor {
-  background-color: rgba(0, 0, 255, 0.4);
-  grid-area: 2 / 2 / 3 / 3;
+  grid-area: 1 / 1 / 2 / 4;
+  position: relative;
+}
+.ColorPicker .pickedColor .transparency {
+  width: 360px;
+  height: 40px;
+  background-image: url("./transparency.svg");
+  z-index: 0;
+  position: absolute;
+}
+.ColorPicker .pickedColor .color-preview {
+  width: 360px;
+  height: 40px;
+  z-index: 1;
+  position: absolute;
+}
+.ColorPicker .pickedColor .color-code {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  margin: 0;
 }
 .ColorPicker .picker {
   position: absolute;
@@ -88,15 +122,10 @@
   cursor: grab;
 }
 
-.ColorPicker .colorGroup .picker {
+.ColorPicker .colorGroup .picker,
+.ColorPicker .alphaChannel .picker {
   width: calc(100% + 4px);
   height: 6px;
   transform: translate(-2px, -2px);
   top: 0;
-}
-.ColorPicker .alphaChannel .picker {
-  height: calc(100% + 4px);
-  width: 6px;
-  transform: translate(-2px, -2px);
-  left: 50%;
 }
